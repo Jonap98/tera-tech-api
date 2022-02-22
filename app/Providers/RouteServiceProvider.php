@@ -19,6 +19,9 @@ class RouteServiceProvider extends ServiceProvider
      */
     public const HOME = '/home';
 
+    // Este se habilita con la configuración que hice en Santcum
+    // protected $namespace = 'App\\Http\\Controllers';
+
     /**
      * The controller namespace for the application.
      *
