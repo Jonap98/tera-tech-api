@@ -34,7 +34,7 @@ use App\Http\Controllers\Api\UserController;
 Route::middleware('auth:api')->get('/user', function (Request $request) {
     return $request->user();
 });
-
+ 
 // Autenticación JWT
 Route::group([
     'middleware' => 'api',
