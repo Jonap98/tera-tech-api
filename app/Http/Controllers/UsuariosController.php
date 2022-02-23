@@ -4,9 +4,22 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Usuarios;
+use App\Models\User;
 
 class UsuariosController extends Controller
 {
+    // public function __construct()
+    // {
+    //     $this->middleware('api');
+    // }
+    public function __construct()
+    {
+        $this->middleware('auth:api');
+    }
+
+    public function getUsuarios() {
+        return response()->json(auth()->user());
+    }
     public function index() {
         $usuarios = Usuarios::all();
 

@@ -4,6 +4,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
 use App\Http\Controllers\Api\UserController;
+use App\Http\Controllers\SolicitudesController;
 
 /*
 |--------------------------------------------------------------------------
@@ -38,7 +39,7 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
 // Autenticación JWT
 Route::group([
     'middleware' => 'api',
-    'prefix' => 'auth'
+    // 'prefix' => 'auth'
 ], function ($router) {
 
     Route::post('registro', 'App\Http\Controllers\AuthController@register');
@@ -47,7 +48,21 @@ Route::group([
     Route::post('refresh', 'App\Http\Controllers\AuthController@refresh');
     Route::post('me', 'App\Http\Controllers\AuthController@me');
 
+    // Obtener roles
+    Route::get('roles', 'App\Http\Controllers\RolesController@obtenerRoles');
+    // Obtener categorias
+    Route::get('categorias', 'App\Http\Controllers\CategoriasController@obtenerCategorias');
+    // Obtener estados
+    Route::get('estados', 'App\Http\Controllers\EstadosController@obtenerEstados');
+    // Crear solicitud
+    Route::post('crear-solicitud', 'App\Http\Controllers\SolicitudesController@crearSolicitud');
+    // Route::get('mis-solicitudes/{idUser?}', 'App\Http\Controllers\SolicitudesController@solicitudCurrentUser')->name('solicitudes.id_usuario');
+    Route::get('solicitudes-usuario/{idUser?}', 'App\Http\Controllers\SolicitudesController@solicitudPorUsuario');
+    // Route::get('solicitudes/{id_user?}/{id_estado?}', 'App\Http\Controllers\SolicitudesController@obtenerSolicitudes');
+
+
+    
 });
 
 // Obtener todos los usuarios
-Route::get('/usuarios', 'App\Http\Controllers\UsuariosController@index');
+Route::get('/usuarios', 'App\Http\Controllers\UsuariosController@getUsuarios');

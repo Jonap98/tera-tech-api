@@ -44,8 +44,9 @@ class AuthController extends Controller
         ));
 
         return response()->json([
-            'message' => 'Usuario registrado correctamente!',
+            'result' => true,
             'user' => $user,
+            'message' => 'Usuario registrado correctamente!',
         ], 201);
         // $request->validate([
         //     'id_rol' => 'required',
@@ -118,9 +119,13 @@ class AuthController extends Controller
     protected function respondWithToken($token)
     {
         return response()->json([
-            'access_token' => $token,
-            'token_type' => 'bearer',
-            'expires_in' => auth()->factory()->getTTL() * 60
+            'result' => true,
+            'data' => ([
+                'access_token' => $token,
+                // 'token_type' => 'bearer',
+                'expires_in' => auth()->factory()->getTTL() * 60
+            ]),
+            'message' => 'Inicio de sesión exitoso!'
         ]);
     }
 }

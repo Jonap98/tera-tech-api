@@ -3,21 +3,21 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App\Models\Categorias;
+use App\Models\Roles;
 
-class CategoriasController extends Controller
+class RolesController extends Controller
 {
     public function __construct()
     {
         $this->middleware('auth:api');
     }
-    
-    public function obtenerCategorias() {
-        $categorias = Categorias::select('id', 'nombre')->get();
+
+    public function obtenerRoles() {
+        $roles = Roles::select('id', 'nombre')->get();
 
         return response()->json([
             'result' => true,
-            'datos' => $categorias
+            'datos' => $roles
         ]);
     }
 }
