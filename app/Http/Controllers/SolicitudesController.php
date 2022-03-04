@@ -8,6 +8,8 @@ use App\Models\Estados;
 use App\Models\User;
 // use App\Models\Categorias;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Str;
 
 class SolicitudesController extends Controller
 {
@@ -27,6 +29,28 @@ class SolicitudesController extends Controller
         $solicitud->descripcion = $request->descripcion;
         $solicitud->fecha_cita = $request->fecha_cita;
 
+        if($request->imagen) {
+            $solicitud->imagen = $request->imagen->store('');
+        }
+    
+        $request->validate([
+            'imagen' => 'image|max:102400'
+        ]);
+        if($request->hasFile('image')) {
+
+            Solicitudes::create([
+                'id_usuario' => $solicitud->id_usuario,
+                'id_categoria' => $solicitud->id_categoria,
+                'id_estado' => $solicitud->id_estado,
+                'id_tecnico' => $solicitud->id_tecnico,
+                'descripcion' => $solicitud->descripcion,
+                'fecha_cita' => $solicitud->fecha_cita,
+                'imagen' => $solicitud->imagen
+                // 'imagen' => $data['image']
+                // 'imagen' => $solicitud->imagen
+            ]);
+        }
+        
         $solicitud->save();
 
         return response()->json([

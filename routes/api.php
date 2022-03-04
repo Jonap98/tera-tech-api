@@ -58,7 +58,7 @@ Route::group([
     Route::post('crear-solicitud', 'App\Http\Controllers\SolicitudesController@crearSolicitud');
     // Route::get('mis-solicitudes/{idUser?}', 'App\Http\Controllers\SolicitudesController@solicitudCurrentUser')->name('solicitudes.id_usuario');
     Route::get('solicitudes-usuario/{idUser?}', 'App\Http\Controllers\SolicitudesController@solicitudPorUsuario');
-    // Route::get('solicitudes/{id_user?}/{id_estado?}', 'App\Http\Controllers\SolicitudesController@obtenerSolicitudes');
+    Route::get('solicitudes/{id_user?}/{id_estado?}', 'App\Http\Controllers\SolicitudesController@obtenerSolicitudes');
 
 
     
