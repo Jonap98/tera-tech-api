@@ -17,6 +17,7 @@ class UsuariosSeeder extends Seeder
     {
         DB::table('usuarios')->insert([
             'id_rol' => 1,
+            'id_especialidad' => 1,
             'nombre' => 'Medaly',
             'apellido' => 'Guerrero',
             'correo' => 'medaly@gmail.com',
@@ -25,6 +26,7 @@ class UsuariosSeeder extends Seeder
 
         DB::table('usuarios')->insert([
             'id_rol' => 2,
+            'id_especialidad' => 3,
             'nombre' => 'Marijose',
             'apellido' => 'Gaona',
             'correo' => 'marijose@gmail.com',
@@ -33,6 +35,7 @@ class UsuariosSeeder extends Seeder
 
         DB::table('users')->insert([
             'id_rol' => 1,
+            'id_especialidad' => 2,
             'name' => 'Medaly',
             'last_name' => 'Guerrero',
             'email' => 'medaly@gmail.com',
@@ -41,6 +44,7 @@ class UsuariosSeeder extends Seeder
 
         DB::table('users')->insert([
             'id_rol' => 2,
+            'id_especialidad' => 2,
             'name' => 'Marijose',
             'last_name' => 'Gaona',
             'email' => 'marijose@gmail.com',
