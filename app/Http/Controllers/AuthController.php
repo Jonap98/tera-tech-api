@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
 use App\Models\User;
 
@@ -32,10 +33,13 @@ class AuthController extends Controller
             'last_name' => 'required',
             'email' => 'required|email|max:100|unique:users',
             'password' => 'required|min:6|confirmed',
+        ], [
+            'email.unique' => 'Ya existe una cuenta registrada con ese email.',
+            'password.confirmed' => 'Las contraseñas deben ser iguales.',
         ]);
 
         if($validator->fails()) {
-            return response()->json($validator->errors()->toJson(), 400);
+            return response()->json($validator->errors(), 400);
         }
 
         $user = User::create(array_merge(
@@ -43,27 +47,11 @@ class AuthController extends Controller
             ['password' => bcrypt($request->password)]
         ));
 
-        return response()->json([
-            'result' => true,
-            'user' => $user,
-            'message' => 'Usuario registrado correctamente!',
-        ], 201);
-        // $request->validate([
-        //     'id_rol' => 'required',
-        //     'name' => 'required',
-        //     'last_name' => 'required',
-        //     'email' => 'required|email|unique:users',
-        //     'password' => 'required|confirmed',
-        // ]);
+        $credentials = $request->only('email', 'password');
 
-        // $user = new User();
-        // $user->id_rol = $request->id_rol;
-        // $user->name = $request->name;
-        // $user->last_name = $request->last_name;
-        // $user->email = $request->email;
-        // $user->password = Hash::make($request->password);
+        $token = Auth::attempt($credentials);
 
-        // $user->save();
+        return $this->respondWithToken('Usuario registrado correctamente!', $token);
     }
     
     public function login()
@@ -71,10 +59,10 @@ class AuthController extends Controller
         $credentials = request(['email', 'password']);
 
         if (! $token = auth()->attempt($credentials)) {
-            return response()->json(['error' => 'Unauthorized'], 401);
+            return response()->json(['message' => 'Favor de revisar sus credenciales'], 401);
         }
 
-        return $this->respondWithToken($token);
+        return $this->respondWithToken('Inicio de sesión exitoso!', $token);
     }
 
     /**
@@ -116,16 +104,16 @@ class AuthController extends Controller
      *
      * @return \Illuminate\Http\JsonResponse
      */
-    protected function respondWithToken($token)
+    protected function respondWithToken(String $text, $token)
     {
         return response()->json([
             'result' => true,
             'data' => ([
+                'current_user' => auth()->user(),
                 'access_token' => $token,
-                // 'token_type' => 'bearer',
                 'expires_in' => auth()->factory()->getTTL() * 60
             ]),
-            'message' => 'Inicio de sesión exitoso!'
+            'message' => $text,
         ]);
     }
 }
