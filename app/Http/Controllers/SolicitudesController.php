@@ -89,21 +89,19 @@ class SolicitudesController extends Controller
             $solicitudes = DB::table('solicitudes')
                 ->join('categorias', 'solicitudes.id_categoria', '=', 'categorias.id')
                 ->join('estados', 'solicitudes.id_estado', '=', 'estados.id')
-                // Crear una tabla empleados?
-                // ->where('solicitudes.id_tecnico', '=', null)
-                // ->join('usuarios', 'solicitudes.id', '=', 'solicitudes.id_tecnico')
-                // ->select('name')
-                // ->where('solicitudes.id_tecnico', '<>', null)
-                ->join('users', 'solicitudes.id_tecnico', '=', 'users.id')
+                ->join('users', 'solicitudes.id_usuario', '=', 'users.id')
+                // ->join('users', 'solicitudes.id_tecnico', '=', 'users.id')
                 ->select(
                     'solicitudes.id_usuario',
                     'solicitudes.id_categoria',
                     'solicitudes.id_estado',
                     'solicitudes.id_tecnico',
-                    'solicitudes.categoria_otro',
                     'solicitudes.descripcion',
                     'solicitudes.fecha_cita',
                     'solicitudes.imagen',
+                    'solicitudes.comentario',
+                    'solicitudes.fecha_listo',
+                    'solicitudes.fecha_real',
                     'categorias.nombre',
                     'estados.estado',
                     'users.name',
