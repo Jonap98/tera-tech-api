@@ -8,5 +8,5 @@ use Illuminate\Database\Eloquent\Model;
 class Solicitudes extends Model
 {
     use HasFactory;
-    protected $fillable = ['id', 'id_usuario', 'id_categoria', 'id_estado', 'id_tecnico', 'categoria_otro', 'descripcion', 'fecha_de_cita', 'imagen', 'active'];
+    protected $fillable = ['id', 'id_usuario', 'id_categoria', 'id_estado', 'id_tecnico', 'descripcion', 'fecha_de_cita', 'imagen', 'active'];
 }
