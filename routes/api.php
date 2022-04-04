@@ -64,7 +64,8 @@ Route::group([
     Route::get('usuarios', 'App\Http\Controllers\UsuariosController@index');
     Route::get('clientes', 'App\Http\Controllers\UsuariosController@obtenerClientes');
     Route::get('tecnicos', 'App\Http\Controllers\UsuariosController@obtenerTecnicos');
-
+    // Obtener fechas citas
+    Route::post('citas', 'App\Http\Controllers\SolicitudesController@verificarDisponibilidad');
     
 });
 

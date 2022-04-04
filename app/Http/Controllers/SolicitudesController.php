@@ -60,49 +60,25 @@ class SolicitudesController extends Controller
         ]);
     }
 
-    // Este si jala, hay que probar otra implementación
-    // public function crearSolicitud(Request $request) {
-    //     // $currentUser = auth()->user();
+    public function verificarDisponibilidad(Request $request) {
 
-    //     $solicitud = new Solicitudes();
+        $fecha = $request->input('fecha_cita');
 
-    //     $solicitud->id_usuario = $request->id_usuario;
-    //     $solicitud->id_categoria = $request->id_categoria;
-    //     $solicitud->id_estado = $request->id_estado;
-    //     $solicitud->id_tecnico = $request->id_tecnico;
-    //     $solicitud->descripcion = $request->descripcion;
-    //     $solicitud->fecha_cita = $request->fecha_cita;
+        if($fecha) {
+            $solicitud = Solicitudes::select('id')
+                ->where('fecha_cita', $fecha)
+                ->get();
+        }
 
-    //     if($request->imagen) {
-    //         $solicitud->imagen = $request->imagen->store('');
-    //     }
-    
-    //     $request->validate([
-    //         'imagen' => 'image|max:102400'
-    //     ]);
-    //     if($request->hasFile('image')) {
-
-    //         Solicitudes::create([
-    //             'id_usuario' => $solicitud->id_usuario,
-    //             'id_categoria' => $solicitud->id_categoria,
-    //             'id_estado' => $solicitud->id_estado,
-    //             'id_tecnico' => $solicitud->id_tecnico,
-    //             'descripcion' => $solicitud->descripcion,
-    //             'fecha_cita' => $solicitud->fecha_cita,
-    //             'imagen' => $solicitud->imagen
-    //             // 'imagen' => $data['image']
-    //             // 'imagen' => $solicitud->imagen
-    //         ]);
-    //     }
+        return response()->json([
+            'result' => true,
+            'solicitudes_count' => $solicitud->count(),
+            'solicitud' => $solicitud,
+        ]);
         
-    //     $solicitud->save();
 
-    //     return response()->json([
-    //         'result' => true,
-    //         'message' => 'Solicitud creada con éxito!'
-    //     ]);
-    // }
-
+    }
+    
     // Solicitud CurrentUser, se usa por el usuario para buscar sus propias
     // solicitudes
     public function solicitudPorUsuario(Request $request) {
