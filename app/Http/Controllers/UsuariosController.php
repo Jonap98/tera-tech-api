@@ -5,13 +5,10 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Usuarios;
 use App\Models\User;
+use Illuminate\Support\Facades\DB;
 
 class UsuariosController extends Controller
 {
-    // public function __construct()
-    // {
-    //     $this->middleware('api');
-    // }
     public function __construct()
     {
         $this->middleware('auth:api');
@@ -21,13 +18,52 @@ class UsuariosController extends Controller
         return response()->json(auth()->user());
     }
     public function index() {
-        $usuarios = Usuarios::all();
+        $usuarios = User::all();
 
         return response()->json([
             'result' => true,
+            'users_count' => $usuarios->count(),
             'datos' => $usuarios
         ]);
+    }
+
+    public function obtenerClientes() {
+        $usuarios = DB::table('users')
+            ->select(
+                'id_rol',
+                'name',
+                'last_name',
+                'email'
+            )
+            ->where('users.id_rol', 3)
+            ->get();
+
+        return response()->json([
+            'result' => true,
+            'users_count' => $usuarios->count(),
+            'datos' => $usuarios
+        ]);
+    }
+
+    public function obtenerTecnicos() {
+        $usuarios = DB::table('users')
+            ->join('especialidades', 'users.id_rol', '=', 'especialidades.id')
+            ->select(
+                'users.id_rol',
+                'users.id_especialidad',
+                'users.name',
+                'users.last_name',
+                'users.email',
+                'especialidades.especialidad'
+            )
+            ->where('users.id_rol', 2)
+            ->get();
         
+        return response()->json([
+            'result' => true,
+            'users_count' => $usuarios->count(),
+            'datos' => $usuarios
+        ]);
     }
 
     public function create() {

@@ -17,6 +17,7 @@ class SolicitudesController extends Controller
     {
         $this->middleware('auth:api');
     }
+
     public function crearSolicitud(Request $request) {
         // $currentUser = auth()->user();
 
@@ -30,13 +31,14 @@ class SolicitudesController extends Controller
         $solicitud->fecha_cita = $request->fecha_cita;
 
         if($request->imagen) {
-            $solicitud->imagen = $request->imagen->store('');
+            $solicitud->imagen = $request->imagen->store('images');
         }
     
         $request->validate([
             'imagen' => 'image|max:102400'
         ]);
         if($request->hasFile('image')) {
+            $path = $request->file('images')->store('images');
 
             Solicitudes::create([
                 'id_usuario' => $solicitud->id_usuario,
@@ -45,8 +47,7 @@ class SolicitudesController extends Controller
                 'id_tecnico' => $solicitud->id_tecnico,
                 'descripcion' => $solicitud->descripcion,
                 'fecha_cita' => $solicitud->fecha_cita,
-                'imagen' => $solicitud->imagen
-                // 'imagen' => $data['image']
+                'imagen' => $path
                 // 'imagen' => $solicitud->imagen
             ]);
         }
@@ -59,7 +60,51 @@ class SolicitudesController extends Controller
         ]);
     }
 
-    // Solicitud CurrentUser
+    // Este si jala, hay que probar otra implementación
+    // public function crearSolicitud(Request $request) {
+    //     // $currentUser = auth()->user();
+
+    //     $solicitud = new Solicitudes();
+
+    //     $solicitud->id_usuario = $request->id_usuario;
+    //     $solicitud->id_categoria = $request->id_categoria;
+    //     $solicitud->id_estado = $request->id_estado;
+    //     $solicitud->id_tecnico = $request->id_tecnico;
+    //     $solicitud->descripcion = $request->descripcion;
+    //     $solicitud->fecha_cita = $request->fecha_cita;
+
+    //     if($request->imagen) {
+    //         $solicitud->imagen = $request->imagen->store('');
+    //     }
+    
+    //     $request->validate([
+    //         'imagen' => 'image|max:102400'
+    //     ]);
+    //     if($request->hasFile('image')) {
+
+    //         Solicitudes::create([
+    //             'id_usuario' => $solicitud->id_usuario,
+    //             'id_categoria' => $solicitud->id_categoria,
+    //             'id_estado' => $solicitud->id_estado,
+    //             'id_tecnico' => $solicitud->id_tecnico,
+    //             'descripcion' => $solicitud->descripcion,
+    //             'fecha_cita' => $solicitud->fecha_cita,
+    //             'imagen' => $solicitud->imagen
+    //             // 'imagen' => $data['image']
+    //             // 'imagen' => $solicitud->imagen
+    //         ]);
+    //     }
+        
+    //     $solicitud->save();
+
+    //     return response()->json([
+    //         'result' => true,
+    //         'message' => 'Solicitud creada con éxito!'
+    //     ]);
+    // }
+
+    // Solicitud CurrentUser, se usa por el usuario para buscar sus propias
+    // solicitudes
     public function solicitudPorUsuario(Request $request) {
         // $currentUser = auth()->user();
 
@@ -70,27 +115,11 @@ class SolicitudesController extends Controller
             $user = User::select('name', 'last_name')
                 ->where('id', $idUser)->first();
 
-            // Select Join con id para obtener los nombres de categorias y estados
-            // V1
-            // $solicitudes = DB::table('solicitudes')
-            //     ->join('categorias', 'solicitudes.id_categoria', '=', 'categorias.id')
-            //     ->join('estados', 'solicitudes.id_estado', '=', 'estados.id')
-            //     // Crear una tabla empleados?
-            //     // ->where('solicitudes.id_tecnico', '=', null)
-            //     // ->join('usuarios', 'solicitudes.id', '=', 'solicitudes.id_tecnico')
-            //     // ->select('name')
-            //     ->join('users', 'solicitudes.id_tecnico', '=', 'users.id')
-            //     ->select('*')
-            //     ->where('solicitudes.id_usuario', $idUser)
-            //     // ->where('solicitudes.id_tecnico', '<>', null)
-            //     ->get();
-
             // V2
             $solicitudes = DB::table('solicitudes')
                 ->join('categorias', 'solicitudes.id_categoria', '=', 'categorias.id')
                 ->join('estados', 'solicitudes.id_estado', '=', 'estados.id')
                 ->join('users', 'solicitudes.id_usuario', '=', 'users.id')
-                // ->join('users', 'solicitudes.id_tecnico', '=', 'users.id')
                 ->select(
                     'solicitudes.id_usuario',
                     'solicitudes.id_categoria',
@@ -108,11 +137,6 @@ class SolicitudesController extends Controller
                     'users.last_name'
                 )
                 ->where('solicitudes.id_usuario', $idUser)
-                // ->where([
-                //     ['solicitudes.id_usuario', $idUser],
-                //     // ['solicitudes.id_tecnico', '=', 'null']
-                // ])
-                // ->where('solicitudes.id_tecnico', '<>', null)
                 ->get();
 
         }
@@ -124,6 +148,75 @@ class SolicitudesController extends Controller
                 'id_user' => $idUser,
                 'user' => $user,
             ]),
+            'datos' => $solicitudes
+        ]);
+    }
+
+    // Se usa por admin o técnico. Permite filtrar por técnico y cliente
+    public function obtenerSolicitudesPorFiltro(Request $request) {
+        $cliente = null;
+        $estado = null;
+        $tecnico = null;
+        $currentUser = auth()->user();
+
+        $idCliente = $request->input('idCliente');
+        $idEstado = $request->input('idEstado');
+        $idTecnico = $request->input('idTecnico');
+
+
+        // Consultas dependiendo de los parametros encontrados
+        if($idCliente && $idEstado && $idTecnico) {
+            $estadoObj = Estados::select('estado')
+                ->where('id', $idEstado)->first();
+            $estado = $estadoObj->estado;
+
+            $cliente = User::select('name', 'last_name')
+                ->where('id', $idCliente)->first();
+            
+            $tecnico = User::select('name', 'last_name')
+                ->where('id', $idTecnico)->first();
+
+            $solicitudes = Solicitudes::select('*')
+            ->where('id_usuario', $idCliente)
+            ->where('id_estado', $idEstado)
+            ->where('id_tecnico', $idTecnico)
+                ->get();
+        } else if ($idCliente && $idTecnico) {
+            $cliente = User::select('name', 'last_name')
+                ->where('id', $idCliente)->first();
+            
+            $tecnico = User::select('name', 'last_name')
+                ->where('id', $idTecnico)->first();
+
+            $solicitudes = Solicitudes::select('*')
+            ->where('id_usuario', $idCliente)
+            ->where('id_tecnico', $idTecnico)
+                ->get();
+        }
+        else if($idCliente) {
+            $cliente = User::select('name', 'last_name')
+                ->where('id', $idCliente)->first();
+
+            $solicitudes = Solicitudes::where('id_usuario', $idCliente)->get();
+
+        } else if($idTecnico) {
+            $tecnico = User::select('name', 'last_name')
+                ->where('id', $idTecnico)->first();
+            
+            $solicitudes = Solicitudes::where('id_tecnico', $idTecnico)->get();
+        } else if($idEstado) {
+            $estadoObj = Estados::select('estado')
+                ->where('id', $idEstado)->first();
+            $estado = $estadoObj->estado;
+            $solicitudes = Solicitudes::where('id_estado', $idEstado)->get();
+        } 
+        else {
+            $solicitudes = Solicitudes::all();
+        }
+
+        return response()->json([
+            'result' => true,
+            'solicitudes_count' => $solicitudes->count(),
             'datos' => $solicitudes
         ]);
     }
