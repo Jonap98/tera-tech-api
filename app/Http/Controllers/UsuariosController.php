@@ -45,10 +45,16 @@ class UsuariosController extends Controller
         ]);
     }
 
-    public function obtenerTecnicos() {
-        $usuarios = DB::table('users')
+    public function obtenerTecnicos(Request $request) {
+        $idUser = null;
+
+        $idUser = $request->input('idUser');
+
+        if($idUser) {
+            $usuarios = DB::table('users')
             ->join('especialidades', 'users.id_rol', '=', 'especialidades.id')
             ->select(
+                'users.id',
                 'users.id_rol',
                 'users.id_especialidad',
                 'users.name',
@@ -57,7 +63,24 @@ class UsuariosController extends Controller
                 'especialidades.especialidad'
             )
             ->where('users.id_rol', 2)
+            ->where('users.id', $idUser)
             ->get();
+        } else {
+            $usuarios = DB::table('users')
+                ->join('especialidades', 'users.id_rol', '=', 'especialidades.id')
+                ->select(
+                    'users.id',
+                    'users.id_rol',
+                    'users.id_especialidad',
+                    'users.name',
+                    'users.last_name',
+                    'users.email',
+                    'especialidades.especialidad'
+                )
+                ->where('users.id_rol', 2)
+                ->get();
+        }
+
         
         return response()->json([
             'result' => true,

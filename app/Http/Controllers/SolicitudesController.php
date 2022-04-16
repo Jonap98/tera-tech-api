@@ -97,6 +97,7 @@ class SolicitudesController extends Controller
                 ->join('estados', 'solicitudes.id_estado', '=', 'estados.id')
                 ->join('users', 'solicitudes.id_usuario', '=', 'users.id')
                 ->select(
+                    'solicitudes.id',
                     'solicitudes.id_usuario',
                     'solicitudes.id_categoria',
                     'solicitudes.id_estado',
@@ -107,10 +108,10 @@ class SolicitudesController extends Controller
                     'solicitudes.comentario',
                     'solicitudes.fecha_listo',
                     'solicitudes.fecha_real',
-                    'categorias.nombre',
-                    'estados.estado',
-                    'users.name',
-                    'users.last_name'
+                    'categorias.nombre as nombre_categoria',
+                    'estados.estado as nombre_estado',
+                    'users.name as nombre_usuario',
+                    'users.last_name as apellido'
                 )
                 ->where('solicitudes.id_usuario', $idUser)
                 ->get();
@@ -130,18 +131,49 @@ class SolicitudesController extends Controller
 
     // Se usa por admin o técnico. Permite filtrar por técnico y cliente
     public function obtenerSolicitudesPorFiltro(Request $request) {
+        $id = null;
         $cliente = null;
         $estado = null;
         $tecnico = null;
         $currentUser = auth()->user();
 
+        $id = $request->input('id');
         $idCliente = $request->input('idCliente');
         $idEstado = $request->input('idEstado');
         $idTecnico = $request->input('idTecnico');
 
 
         // Consultas dependiendo de los parametros encontrados
-        if($idCliente && $idEstado && $idTecnico) {
+        if($id && $idEstado) {
+            $estadoObj = Estados::select('estado')
+                ->where('id', $idEstado)->first();
+            $estado = $estadoObj->estado;
+            // $solicitudes = Solicitudes::where('id_estado', $idEstado)->get();
+            $solicitudes = DB::table('solicitudes')
+                ->join('categorias', 'solicitudes.id_categoria', '=', 'categorias.id')
+                ->join('estados', 'solicitudes.id_estado', '=', 'estados.id')
+                ->join('users', 'solicitudes.id_usuario', '=', 'users.id')
+                ->select(
+                    'solicitudes.id',
+                    'solicitudes.id_usuario',
+                    'solicitudes.id_categoria',
+                    'solicitudes.id_estado',
+                    'solicitudes.id_tecnico',
+                    'solicitudes.descripcion',
+                    'solicitudes.fecha_cita',
+                    'solicitudes.imagen',
+                    'solicitudes.comentario',
+                    'solicitudes.fecha_listo',
+                    'solicitudes.fecha_real',
+                    'categorias.nombre as nombre_categoria',
+                    'estados.estado as nombre_estado',
+                    'users.name as nombre_usuario',
+                    'users.last_name as apellido'
+                )
+                // ->where('solicitudes.id_usuario', $idUser)
+                ->where('solicitudes.id', $id)
+                ->get();
+        } else if($idCliente && $idEstado && $idTecnico) {
             $estadoObj = Estados::select('estado')
                 ->where('id', $idEstado)->first();
             $estado = $estadoObj->estado;
@@ -184,7 +216,30 @@ class SolicitudesController extends Controller
             $estadoObj = Estados::select('estado')
                 ->where('id', $idEstado)->first();
             $estado = $estadoObj->estado;
-            $solicitudes = Solicitudes::where('id_estado', $idEstado)->get();
+            // $solicitudes = Solicitudes::where('id_estado', $idEstado)->get();
+            $solicitudes = DB::table('solicitudes')
+                ->join('categorias', 'solicitudes.id_categoria', '=', 'categorias.id')
+                ->join('estados', 'solicitudes.id_estado', '=', 'estados.id')
+                ->join('users', 'solicitudes.id_usuario', '=', 'users.id')
+                ->select(
+                    'solicitudes.id',
+                    'solicitudes.id_usuario',
+                    'solicitudes.id_categoria',
+                    'solicitudes.id_estado',
+                    'solicitudes.id_tecnico',
+                    'solicitudes.descripcion',
+                    'solicitudes.fecha_cita',
+                    'solicitudes.imagen',
+                    'solicitudes.comentario',
+                    'solicitudes.fecha_listo',
+                    'solicitudes.fecha_real',
+                    'categorias.nombre as nombre_categoria',
+                    'estados.estado as nombre_estado',
+                    'users.name as nombre_usuario',
+                    'users.last_name as apellido',
+                    )
+                    ->where('id_estado', $idEstado)
+                    ->get();
         } 
         else {
             $solicitudes = Solicitudes::all();
@@ -193,7 +248,14 @@ class SolicitudesController extends Controller
         return response()->json([
             'result' => true,
             'solicitudes_count' => $solicitudes->count(),
-            'datos' => $solicitudes
+            'user' => ([
+                'id_user' => null,
+                'user' => ([
+                    'name' => null,
+                    'last_name' => null,
+                ]),
+            ]),
+            'datos' => $solicitudes,
         ]);
     }
 
@@ -247,6 +309,31 @@ class SolicitudesController extends Controller
                 ->where('id', $idEstado)->first();
             $estado = $estadoObj->estado;
             $solicitudes = Solicitudes::where('id_estado', $idEstado)->get();
+
+            // $solicitudes = DB::table('solicitudes')
+            //     ->join('categorias', 'solicitudes.id_categoria', '=', 'categorias.id')
+            //     ->join('estados', 'solicitudes.id_estado', '=', 'estados.id')
+            //     // ->join('users', 'solicitudes.id_usuario', '=', 'users.id')
+            //     ->select(
+            //         'solicitudes.id',
+            //         'solicitudes.id_usuario',
+            //         'solicitudes.id_categoria',
+            //         'solicitudes.id_estado',
+            //         'solicitudes.id_tecnico',
+            //         'solicitudes.descripcion',
+            //         'solicitudes.fecha_cita',
+            //         'solicitudes.imagen',
+            //         'solicitudes.comentario',
+            //         'solicitudes.fecha_listo',
+            //         'solicitudes.fecha_real',
+            //         'categorias.nombre',
+            //         'estados.estado',
+            //         // 'users.name',
+            //         // 'users.last_name'
+            //     )
+            //     // ->where('solicitudes.id_usuario', $idUser)
+            //     ->where('id_estado', $idEstado)
+            //     ->get();
 
         } else {
             $solicitudes = Solicitudes::all();

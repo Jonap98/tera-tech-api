@@ -58,12 +58,12 @@ Route::group([
     Route::post('crear-solicitud', 'App\Http\Controllers\SolicitudesController@crearSolicitud');
     // Route::get('mis-solicitudes/{idUser?}', 'App\Http\Controllers\SolicitudesController@solicitudCurrentUser')->name('solicitudes.id_usuario');
     Route::get('solicitudes-usuario/{idUser?}', 'App\Http\Controllers\SolicitudesController@solicitudPorUsuario');
-    Route::get('solicitudes/{id_user?}/{id_estado?}', 'App\Http\Controllers\SolicitudesController@obtenerSolicitudesporFiltro');
+    Route::get('solicitudes/{id?}/{id_user?}/{id_estado?}', 'App\Http\Controllers\SolicitudesController@obtenerSolicitudesporFiltro');
     // Route::get('solicitudes')
     // Obtener usuarios
     Route::get('usuarios', 'App\Http\Controllers\UsuariosController@index');
     Route::get('clientes', 'App\Http\Controllers\UsuariosController@obtenerClientes');
-    Route::get('tecnicos', 'App\Http\Controllers\UsuariosController@obtenerTecnicos');
+    Route::get('tecnicos/{idUser?}', 'App\Http\Controllers\UsuariosController@obtenerTecnicos');
     // Obtener fechas citas
     Route::post('citas', 'App\Http\Controllers\SolicitudesController@verificarDisponibilidad');
     
