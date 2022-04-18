@@ -58,7 +58,13 @@ Route::group([
     Route::post('crear-solicitud', 'App\Http\Controllers\SolicitudesController@crearSolicitud');
     // Route::get('mis-solicitudes/{idUser?}', 'App\Http\Controllers\SolicitudesController@solicitudCurrentUser')->name('solicitudes.id_usuario');
     Route::get('solicitudes-usuario/{idUser?}', 'App\Http\Controllers\SolicitudesController@solicitudPorUsuario');
-    Route::get('solicitudes/{id?}/{id_user?}/{id_estado?}', 'App\Http\Controllers\SolicitudesController@obtenerSolicitudesporFiltro');
+    Route::get('solicitudes/{id?}/{id_user?}/{id_estado?}/{id_tecnico?}', 'App\Http\Controllers\SolicitudesController@obtenerSolicitudesporFiltro');
+    // Cerrar solicitud
+    Route::put('cerrar-solicitud/{idSolicitud}', 'App\Http\Controllers\SolicitudesController@cerrarSolicitud');
+    // Atender solicitud
+    Route::post('atender-solicitud/{idSolicitud}', 'App\Http\Controllers\SolicitudesController@atenderSolicitud');
+    // Asignar técnico a solicitud
+    Route::post('asignar-tecnico/{idSolicitud}', 'App\Http\Controllers\SolicitudesController@asignarTecnico');
     // Route::get('solicitudes')
     // Obtener usuarios
     Route::get('usuarios', 'App\Http\Controllers\UsuariosController@index');

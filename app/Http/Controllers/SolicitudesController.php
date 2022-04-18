@@ -173,6 +173,35 @@ class SolicitudesController extends Controller
                 // ->where('solicitudes.id_usuario', $idUser)
                 ->where('solicitudes.id', $id)
                 ->get();
+        } else if($idEstado && $idTecnico) {
+            $estadoObj = Estados::select('estado')
+                ->where('id', $idEstado)->first();
+            $estado = $estadoObj->estado;
+            // $solicitudes = Solicitudes::where('id_estado', $idEstado)->get();
+            $solicitudes = DB::table('solicitudes')
+                ->join('categorias', 'solicitudes.id_categoria', '=', 'categorias.id')
+                ->join('estados', 'solicitudes.id_estado', '=', 'estados.id')
+                ->join('users', 'solicitudes.id_usuario', '=', 'users.id')
+                ->select(
+                    'solicitudes.id',
+                    'solicitudes.id_usuario',
+                    'solicitudes.id_categoria',
+                    'solicitudes.id_estado',
+                    'solicitudes.id_tecnico',
+                    'solicitudes.descripcion',
+                    'solicitudes.fecha_cita',
+                    'solicitudes.imagen',
+                    'solicitudes.comentario',
+                    'solicitudes.fecha_listo',
+                    'solicitudes.fecha_real',
+                    'categorias.nombre as nombre_categoria',
+                    'estados.estado as nombre_estado',
+                    'users.name as nombre_usuario',
+                    'users.last_name as apellido',
+                    )
+                    ->where('solicitudes.id_tecnico', $idTecnico)
+                    ->where('solicitudes.id_estado', $idEstado)
+                    ->get();
         } else if($idCliente && $idEstado && $idTecnico) {
             $estadoObj = Estados::select('estado')
                 ->where('id', $idEstado)->first();
@@ -240,8 +269,7 @@ class SolicitudesController extends Controller
                     )
                     ->where('id_estado', $idEstado)
                     ->get();
-        } 
-        else {
+        } else {
             $solicitudes = Solicitudes::all();
         }
 
@@ -269,22 +297,6 @@ class SolicitudesController extends Controller
         $idUser = $request->input('idUser');
         $idEstado = $request->input('idEstado');
 
-        // $query = $request->all();
-
-        // $id = Input::get('idUser');
-        // $query = Input::all();
-
-        // $query = $request->all();
-
-        // Treae todas las solicitudes
-        // $query = Solicitudes::all();
-
-        // if($idUser && $idEstado) {
-        //     $solicitudes = Solicitudes::where(
-        //         ['id_usuario', $idUser],
-        //         ['id_estado', $idEstado],
-        //     )->get();
-
         // Consultas dependiendo de los parametros encontrados
         if($idUser && $idEstado) {
             $estadoObj = Estados::select('estado')
@@ -310,53 +322,11 @@ class SolicitudesController extends Controller
             $estado = $estadoObj->estado;
             $solicitudes = Solicitudes::where('id_estado', $idEstado)->get();
 
-            // $solicitudes = DB::table('solicitudes')
-            //     ->join('categorias', 'solicitudes.id_categoria', '=', 'categorias.id')
-            //     ->join('estados', 'solicitudes.id_estado', '=', 'estados.id')
-            //     // ->join('users', 'solicitudes.id_usuario', '=', 'users.id')
-            //     ->select(
-            //         'solicitudes.id',
-            //         'solicitudes.id_usuario',
-            //         'solicitudes.id_categoria',
-            //         'solicitudes.id_estado',
-            //         'solicitudes.id_tecnico',
-            //         'solicitudes.descripcion',
-            //         'solicitudes.fecha_cita',
-            //         'solicitudes.imagen',
-            //         'solicitudes.comentario',
-            //         'solicitudes.fecha_listo',
-            //         'solicitudes.fecha_real',
-            //         'categorias.nombre',
-            //         'estados.estado',
-            //         // 'users.name',
-            //         // 'users.last_name'
-            //     )
-            //     // ->where('solicitudes.id_usuario', $idUser)
-            //     ->where('id_estado', $idEstado)
-            //     ->get();
-
         } else {
             $solicitudes = Solicitudes::all();
         }
 
 
-        // $solicitudes = Solicitudes::where()
-        //     ->where('id_usuario', $idUser);
-        // $solicitudes = DB::table('solicitudes')
-        //     ->where('id_usuario', '=', $idUser)
-        //     ->fisrt();
-
-        // $solicitudes = Solicitudes::where('id_usuario', 3);
-
-        // return $solicitudes->json();
-        // Response solo ids
-        // return response()->json([
-        //     'result' => true,
-        //     'solicitudes_count' => $solicitudes->count(),
-        //     'id_user' => $idUser,
-        //     'id_estado' => $idEstado,
-        //     'datos' => $solicitudes
-        // ]);
 
         // Response más completa
         return response()->json([
@@ -372,6 +342,78 @@ class SolicitudesController extends Controller
             ]),
             // 'id_estado' => $idEstado,
             'datos' => $solicitudes
+        ]);
+    }
+
+    public function asignarTecnico(Request $request, $idSolicitud) {
+
+        $solicitud = Solicitudes::find($idSolicitud);
+        
+        $solicitud->id_tecnico = $request->id_tecnico;
+
+        $solicitud->update([
+            'id_tecnico' => $solicitud->id_tecnico,
+            'id_estado' => 3,
+        ]);
+
+        $solicitud->save();
+
+        return response()->json([
+            'result' => true,
+            'message' => 'Técnico asignado con éxito!'
+        ]);
+    }
+
+    public function atenderSolicitud(Request $request, $idSolicitud) {
+
+        $solicitud = Solicitudes::find($idSolicitud);
+        
+        if($request->detalle == 1) {
+            $solicitud->id_estado = 5;
+        } else {
+            $solicitud->id_estado = 4;
+        }
+        
+        $solicitud->comentario = $request->comentario;
+        $solicitud->fecha_listo = $request->fecha_listo;
+
+        $solicitud->update([
+            'id_estado' => $solicitud->id_estado,
+            'comentario' => $solicitud->comentario,
+            'fecha_listo' => $solicitud->fecha_listo,
+
+        ]);
+
+        // Solicitudes::create([
+        //     'id_usuario' => $solicitud->id_usuario,
+        //     'id_categoria' => $solicitud->id_categoria,
+        //     'id_estado' => $solicitud->id_estado,
+        //     'id_tecnico' => $solicitud->id_tecnico,
+        //     'descripcion' => $solicitud->descripcion,
+        //     'fecha_cita' => $solicitud->fecha_cita,
+        //     'imagen' => $path
+        //     // 'imagen' => $solicitud->imagen
+        // ]);
+
+
+        $solicitud->save();
+
+        return response()->json([
+            'result' => true,
+            'message' => 'Solicitud actualizada con éxito!'
+        ]);
+    }
+
+    public function cerrarSolicitud($idSolicitud) {
+
+        $solicitud = Solicitudes::find($idSolicitud);
+        $solicitud->id_estado = 6;
+
+        $solicitud->save();
+
+        return response()->json([
+            'result' => true,
+            'message' => 'Solicitud cerrada con éxito!'
         ]);
     }
 }

@@ -59,7 +59,7 @@ class UsuariosSeeder extends Seeder
         DB::table('users')->insert([
             'id_rol' => 2,
             'id_especialidad' => 2,
-            'name' => 'Techico 2',
+            'name' => 'Tecnico 2',
             'last_name' => 'Dos',
             'email' => 'tech2@gmail.com',
             'password' => Hash::make('123456'),
@@ -70,7 +70,7 @@ class UsuariosSeeder extends Seeder
         DB::table('users')->insert([
             'id_rol' => 2,
             'id_especialidad' => 3,
-            'name' => 'Techico 3',
+            'name' => 'Tecnico 3',
             'last_name' => 'Tres',
             'email' => 'tech3@gmail.com',
             'password' => Hash::make('123456'),
@@ -81,7 +81,7 @@ class UsuariosSeeder extends Seeder
         DB::table('users')->insert([
             'id_rol' => 2,
             'id_especialidad' => 4,
-            'name' => 'Techico 4',
+            'name' => 'Tecnico 4',
             'last_name' => 'Cuatro',
             'email' => 'tech4@gmail.com',
             'password' => Hash::make('123456'),
@@ -92,7 +92,7 @@ class UsuariosSeeder extends Seeder
         DB::table('users')->insert([
             'id_rol' => 2,
             'id_especialidad' => 5,
-            'name' => 'Techico 5',
+            'name' => 'Tecnico 5',
             'last_name' => 'Cinco',
             'email' => 'tech5@gmail.com',
             'password' => Hash::make('123456'),
