@@ -30,6 +30,7 @@ class UsuariosController extends Controller
     public function obtenerClientes() {
         $usuarios = DB::table('users')
             ->select(
+                'id',
                 'id_rol',
                 'name',
                 'last_name',

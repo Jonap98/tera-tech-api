@@ -225,7 +225,27 @@ class SolicitudesController extends Controller
             $tecnico = User::select('name', 'last_name')
                 ->where('id', $idTecnico)->first();
 
-            $solicitudes = Solicitudes::select('*')
+                $solicitudes = DB::table('solicitudes')
+                ->join('categorias', 'solicitudes.id_categoria', '=', 'categorias.id')
+                ->join('estados', 'solicitudes.id_estado', '=', 'estados.id')
+                ->join('users', 'solicitudes.id_usuario', '=', 'users.id')
+                ->select(
+                    'solicitudes.id',
+                    'solicitudes.id_usuario',
+                    'solicitudes.id_categoria',
+                    'solicitudes.id_estado',
+                    'solicitudes.id_tecnico',
+                    'solicitudes.descripcion',
+                    'solicitudes.fecha_cita',
+                    'solicitudes.imagen',
+                    'solicitudes.comentario',
+                    'solicitudes.fecha_listo',
+                    'solicitudes.fecha_real',
+                    'categorias.nombre as nombre_categoria',
+                    'estados.estado as nombre_estado',
+                    'users.name as nombre_usuario',
+                    'users.last_name as apellido',
+                    )
             ->where('id_usuario', $idCliente)
             ->where('id_tecnico', $idTecnico)
                 ->get();
@@ -234,13 +254,57 @@ class SolicitudesController extends Controller
             $cliente = User::select('name', 'last_name')
                 ->where('id', $idCliente)->first();
 
-            $solicitudes = Solicitudes::where('id_usuario', $idCliente)->get();
+                $solicitudes = DB::table('solicitudes')
+                ->join('categorias', 'solicitudes.id_categoria', '=', 'categorias.id')
+                ->join('estados', 'solicitudes.id_estado', '=', 'estados.id')
+                ->join('users', 'solicitudes.id_usuario', '=', 'users.id')
+                ->select(
+                    'solicitudes.id',
+                    'solicitudes.id_usuario',
+                    'solicitudes.id_categoria',
+                    'solicitudes.id_estado',
+                    'solicitudes.id_tecnico',
+                    'solicitudes.descripcion',
+                    'solicitudes.fecha_cita',
+                    'solicitudes.imagen',
+                    'solicitudes.comentario',
+                    'solicitudes.fecha_listo',
+                    'solicitudes.fecha_real',
+                    'categorias.nombre as nombre_categoria',
+                    'estados.estado as nombre_estado',
+                    'users.name as nombre_usuario',
+                    'users.last_name as apellido',
+                    )
+                    ->where('id_usuario', $idCliente)
+                    ->get();
 
         } else if($idTecnico) {
             $tecnico = User::select('name', 'last_name')
                 ->where('id', $idTecnico)->first();
             
-            $solicitudes = Solicitudes::where('id_tecnico', $idTecnico)->get();
+                $solicitudes = DB::table('solicitudes')
+                ->join('categorias', 'solicitudes.id_categoria', '=', 'categorias.id')
+                ->join('estados', 'solicitudes.id_estado', '=', 'estados.id')
+                ->join('users', 'solicitudes.id_usuario', '=', 'users.id')
+                ->select(
+                    'solicitudes.id',
+                    'solicitudes.id_usuario',
+                    'solicitudes.id_categoria',
+                    'solicitudes.id_estado',
+                    'solicitudes.id_tecnico',
+                    'solicitudes.descripcion',
+                    'solicitudes.fecha_cita',
+                    'solicitudes.imagen',
+                    'solicitudes.comentario',
+                    'solicitudes.fecha_listo',
+                    'solicitudes.fecha_real',
+                    'categorias.nombre as nombre_categoria',
+                    'estados.estado as nombre_estado',
+                    'users.name as nombre_usuario',
+                    'users.last_name as apellido',
+                    )
+                    ->where('id_tecnico', $idTecnico)
+                    ->get();
         } else if($idEstado) {
             $estadoObj = Estados::select('estado')
                 ->where('id', $idEstado)->first();
