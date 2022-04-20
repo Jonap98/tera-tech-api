@@ -43,6 +43,7 @@ Route::group([
 ], function ($router) {
 
     Route::post('registro', 'App\Http\Controllers\AuthController@register');
+    Route::post('registro-empleados', 'App\Http\Controllers\AuthController@registerEmployee');
     Route::post('login', 'App\Http\Controllers\AuthController@login');
     Route::post('logout', 'App\Http\Controllers\AuthController@logout');
     Route::post('refresh', 'App\Http\Controllers\AuthController@refresh');

@@ -6,6 +6,8 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
 use App\Models\User;
+use Illuminate\Support\Facades\Mail;
+use App\Mail\PasswordTeratech;
 
 class AuthController extends Controller
 {
@@ -16,7 +18,7 @@ class AuthController extends Controller
      */
     public function __construct()
     {
-        $this->middleware('auth:api', ['except' => ['login', 'register']]);
+        $this->middleware('auth:api', ['except' => ['login', 'register', 'registerEmployee']]);
     }
 
     /**
@@ -51,6 +53,38 @@ class AuthController extends Controller
         $credentials = $request->only('email', 'password');
 
         $token = Auth::attempt($credentials);
+
+        return $this->respondWithToken('Usuario registrado correctamente!', $token);
+    }
+
+    public function registerEmployee(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            'id_rol' => 'required',
+            'id_especialidad' => 'nullable',
+            'name' => 'required',
+            'last_name' => 'required',
+            'email' => 'required|email|max:100|unique:users',
+            'password' => 'required|min:6|confirmed',
+        ], [
+            'email.unique' => 'Ya existe una cuenta registrada con ese email.',
+            'password.confirmed' => 'Las contraseñas deben ser iguales.',
+        ]);
+
+        if($validator->fails()) {
+            return response()->json($validator->errors(), 400);
+        }
+
+        $user = User::create(array_merge(
+            $validator->validate(),
+            ['password' => bcrypt($request->password)]
+        ));
+
+        $credentials = $request->only('email', 'password');
+
+        $token = Auth::attempt($credentials);
+
+        Mail::to($request->email)->send(new PasswordTeratech($request->name, $request->password));
 
         return $this->respondWithToken('Usuario registrado correctamente!', $token);
     }
