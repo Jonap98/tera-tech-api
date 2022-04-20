@@ -15,13 +15,18 @@ class SolicitudesSeeder extends Seeder
      */
     public function run()
     {
-        // DB::table('solicitudes')->insert([
-        //     'id_usuario' => 4,
-        //     'id_categoria' => 2,
-        //     'id_estado' => 1,
-        //     'descripcion' => 'Culpa aliqua dolore incididunt pariatur exercitation ullamco.',
-        //     'fecha_cita' => Carbon::now()
-        // ]);
+        DB::table('solicitudes')->insert([
+            'id_usuario' => 7,
+            'id_categoria' => 2,
+            'id_estado' => 6,
+            'descripcion' => 'Se quebró la esquinita de la pantalla y se batalla para cerrar',
+            'fecha_cita' => Carbon::now(),
+            'comentario' => 'Se comprará la carcaza completa, ya que no hay piezas disponibles para ese modelo.',
+            'fecha_listo' => Carbon::now(),
+            'fecha_real' => Carbon::now(),
+            'created_at' => Carbon::now(),
+            'updated_at' => Carbon::now(),
+        ]);
 
         // DB::table('solicitudes')->insert([
         //     'id_usuario' => 4,

@@ -10,6 +10,7 @@ use App\Models\User;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
+use Carbon\Carbon;
 
 class SolicitudesController extends Controller
 {
@@ -334,7 +335,32 @@ class SolicitudesController extends Controller
                     ->where('id_estado', $idEstado)
                     ->get();
         } else {
-            $solicitudes = Solicitudes::all();
+            $solicitudes = DB::table('solicitudes')
+                ->join('categorias', 'solicitudes.id_categoria', '=', 'categorias.id')
+                ->join('estados', 'solicitudes.id_estado', '=', 'estados.id')
+                ->join('users', 'solicitudes.id_usuario', '=', 'users.id')
+                ->join('users as usr', 'solicitudes.id_tecnico', '=', 'usr.id')
+                // ->join('users as usr', 'solicitudes.id_tecnico', '=', 'users.id')
+                ->select(
+                    'solicitudes.id',
+                    'solicitudes.id_usuario',
+                    'solicitudes.id_categoria',
+                    'solicitudes.id_estado',
+                    'solicitudes.id_tecnico',
+                    'solicitudes.descripcion',
+                    'solicitudes.fecha_cita',
+                    'solicitudes.imagen',
+                    'solicitudes.comentario',
+                    'solicitudes.fecha_listo',
+                    'solicitudes.fecha_real',
+                    'categorias.nombre as nombre_categoria',
+                    'estados.estado as nombre_estado',
+                    'users.name as nombre_usuario',
+                    'users.last_name as apellido',
+                    'usr.name as nombre_tecnico',
+                    'usr.last_name as apellido_tecnico',
+                    )
+                    ->get();
         }
 
         return response()->json([
@@ -472,6 +498,7 @@ class SolicitudesController extends Controller
 
         $solicitud = Solicitudes::find($idSolicitud);
         $solicitud->id_estado = 6;
+        $solicitud->fecha_real = Carbon::now();
 
         $solicitud->save();
 
