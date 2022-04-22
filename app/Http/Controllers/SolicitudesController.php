@@ -66,15 +66,51 @@ class SolicitudesController extends Controller
         $fecha = $request->input('fecha_cita');
 
         if($fecha) {
-            $solicitud = Solicitudes::select('id')
-                ->where('fecha_cita', $fecha)
+            $solicitudes = Solicitudes::select('id as id_solicitud', 'fecha_cita as fecha')
+                ->where('fecha_cita', 'LIKE', $fecha.'%')
                 ->get();
+                $solicitud2 = Solicitudes::where('fecha_cita', 'LIKE', $fecha.'%')
+                ->get();
+        }
+        // return User::whereRaw('SUBSTRING(column, -2,  2) = '.$value)->get();
+        $map = ([
+            'h11' => false,
+            'h12' => false,
+            'h13' => false,
+            'h15' => false,
+            'h16' => false,
+            'h17' => false,
+        ]);
+        // $map['s13'] = true;
+        
+        foreach ($solicitudes as $solicitud) {
+            if(Str::substr($solicitud->fecha, 11) == '11:00:00') {
+                $map['h11'] = true;
+            } else if(Str::substr($solicitud->fecha, 11) == '12:00:00') {
+                $map['h12'] = true;
+            } else if(Str::substr($solicitud->fecha, 11) == '13:00:00') {
+                $map['h13'] = true;
+            } else if(Str::substr($solicitud->fecha, 11) == '15:00:00') {
+                $map['h15'] = true;
+            } else if(Str::substr($solicitud->fecha, 11) == '16:00:00') {
+                $map['h16'] = true;
+            } else if(Str::substr($solicitud->fecha, 11) == '17:00:00') {
+                $map['h17'] = true;
+            }
+            // var_dump($solicitud->id_solicitud);
+            // var_dump($solicitud->fecha);
+            // $ids = $solicitud->id_solicitud;
+            // $fechas = $solicitud->fecha;
+            // var_dump($fechas);
         }
 
         return response()->json([
             'result' => true,
-            'solicitudes_count' => $solicitud->count(),
-            'solicitud' => $solicitud,
+            'fecha' => $fecha,
+            // 'solicitudes_count' => $solicitudes->count(),
+            // 'solicitud' => $solicitudes[0]->fecha,
+            // 'solicitud2' => $solicitudes,
+            'disponibles' => $map,
         ]);
         
 
