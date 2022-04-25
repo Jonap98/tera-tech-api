@@ -148,7 +148,7 @@ class SolicitudesController extends Controller
                     'categorias.nombre as nombre_categoria',
                     'estados.estado as nombre_estado',
                     'users.name as nombre_usuario',
-                    'users.last_name as apellido'
+                    'users.last_name as apellido_usuario'
                 )
                 ->where('solicitudes.id_usuario', $idUser)
                 ->get();
@@ -205,7 +205,7 @@ class SolicitudesController extends Controller
                     'categorias.nombre as nombre_categoria',
                     'estados.estado as nombre_estado',
                     'users.name as nombre_usuario',
-                    'users.last_name as apellido'
+                    'users.last_name as apellido_usuario'
                 )
                 // ->where('solicitudes.id_usuario', $idUser)
                 ->where('solicitudes.id', $id)
@@ -234,7 +234,7 @@ class SolicitudesController extends Controller
                     'categorias.nombre as nombre_categoria',
                     'estados.estado as nombre_estado',
                     'users.name as nombre_usuario',
-                    'users.last_name as apellido',
+                    'users.last_name as apellido_usuario',
                     )
                     ->where('solicitudes.id_tecnico', $idTecnico)
                     ->where('solicitudes.id_estado', $idEstado)
@@ -281,7 +281,7 @@ class SolicitudesController extends Controller
                     'categorias.nombre as nombre_categoria',
                     'estados.estado as nombre_estado',
                     'users.name as nombre_usuario',
-                    'users.last_name as apellido',
+                    'users.last_name as apellido_usuario',
                     )
             ->where('id_usuario', $idCliente)
             ->where('id_tecnico', $idTecnico)
@@ -310,7 +310,7 @@ class SolicitudesController extends Controller
                     'categorias.nombre as nombre_categoria',
                     'estados.estado as nombre_estado',
                     'users.name as nombre_usuario',
-                    'users.last_name as apellido',
+                    'users.last_name as apellido_usuario',
                     )
                     ->where('id_usuario', $idCliente)
                     ->get();
@@ -338,7 +338,7 @@ class SolicitudesController extends Controller
                     'categorias.nombre as nombre_categoria',
                     'estados.estado as nombre_estado',
                     'users.name as nombre_usuario',
-                    'users.last_name as apellido',
+                    'users.last_name as apellido_usuario',
                     )
                     ->where('id_tecnico', $idTecnico)
                     ->get();
@@ -366,7 +366,7 @@ class SolicitudesController extends Controller
                     'categorias.nombre as nombre_categoria',
                     'estados.estado as nombre_estado',
                     'users.name as nombre_usuario',
-                    'users.last_name as apellido',
+                    'users.last_name as apellido_usuario',
                     )
                     ->where('id_estado', $idEstado)
                     ->get();
