@@ -142,7 +142,8 @@ class SolicitudesController extends Controller
                     'solicitudes.descripcion',
                     'solicitudes.fecha_cita',
                     'solicitudes.imagen',
-                    'solicitudes.comentario',
+                    'solicitudes.comentario_solucion',
+                    'solicitudes.comentario_detalle',
                     'solicitudes.fecha_listo',
                     'solicitudes.fecha_real',
                     'categorias.nombre as nombre_categoria',
@@ -199,7 +200,8 @@ class SolicitudesController extends Controller
                     'solicitudes.descripcion',
                     'solicitudes.fecha_cita',
                     'solicitudes.imagen',
-                    'solicitudes.comentario',
+                    'solicitudes.comentario_solucion',
+                    'solicitudes.comentario_detalle',
                     'solicitudes.fecha_listo',
                     'solicitudes.fecha_real',
                     'categorias.nombre as nombre_categoria',
@@ -228,7 +230,8 @@ class SolicitudesController extends Controller
                     'solicitudes.descripcion',
                     'solicitudes.fecha_cita',
                     'solicitudes.imagen',
-                    'solicitudes.comentario',
+                    'solicitudes.comentario_solucion',
+                    'solicitudes.comentario_detalle',
                     'solicitudes.fecha_listo',
                     'solicitudes.fecha_real',
                     'categorias.nombre as nombre_categoria',
@@ -275,7 +278,8 @@ class SolicitudesController extends Controller
                     'solicitudes.descripcion',
                     'solicitudes.fecha_cita',
                     'solicitudes.imagen',
-                    'solicitudes.comentario',
+                    'solicitudes.comentario_solucion',
+                    'solicitudes.comentario_detalle',
                     'solicitudes.fecha_listo',
                     'solicitudes.fecha_real',
                     'categorias.nombre as nombre_categoria',
@@ -304,7 +308,8 @@ class SolicitudesController extends Controller
                     'solicitudes.descripcion',
                     'solicitudes.fecha_cita',
                     'solicitudes.imagen',
-                    'solicitudes.comentario',
+                    'solicitudes.comentario_solucion',
+                    'solicitudes.comentario_detalle',
                     'solicitudes.fecha_listo',
                     'solicitudes.fecha_real',
                     'categorias.nombre as nombre_categoria',
@@ -332,7 +337,8 @@ class SolicitudesController extends Controller
                     'solicitudes.descripcion',
                     'solicitudes.fecha_cita',
                     'solicitudes.imagen',
-                    'solicitudes.comentario',
+                    'solicitudes.comentario_solucion',
+                    'solicitudes.comentario_detalle',
                     'solicitudes.fecha_listo',
                     'solicitudes.fecha_real',
                     'categorias.nombre as nombre_categoria',
@@ -360,7 +366,8 @@ class SolicitudesController extends Controller
                     'solicitudes.descripcion',
                     'solicitudes.fecha_cita',
                     'solicitudes.imagen',
-                    'solicitudes.comentario',
+                    'solicitudes.comentario_solucion',
+                    'solicitudes.comentario_detalle',
                     'solicitudes.fecha_listo',
                     'solicitudes.fecha_real',
                     'categorias.nombre as nombre_categoria',
@@ -386,7 +393,8 @@ class SolicitudesController extends Controller
                     'solicitudes.descripcion',
                     'solicitudes.fecha_cita',
                     'solicitudes.imagen',
-                    'solicitudes.comentario',
+                    'solicitudes.comentario_solucion',
+                    'solicitudes.comentario_detalle',
                     'solicitudes.fecha_listo',
                     'solicitudes.fecha_real',
                     'categorias.nombre as nombre_categoria',
@@ -500,12 +508,14 @@ class SolicitudesController extends Controller
             $solicitud->id_estado = 4;
         }
         
-        $solicitud->comentario = $request->comentario;
+        $solicitud->comentario_solucion = $request->comentario_solucion;
+        $solicitud->comentario_detalle = $request->comentario_detalle;
         $solicitud->fecha_listo = $request->fecha_listo;
 
         $solicitud->update([
             'id_estado' => $solicitud->id_estado,
-            'comentario' => $solicitud->comentario,
+            'comentario_solucion' => $solicitud->comentario_solucion,
+            'comentario_detalle' => $solicitud->comentario_detalle,
             'fecha_listo' => $solicitud->fecha_listo,
 
         ]);

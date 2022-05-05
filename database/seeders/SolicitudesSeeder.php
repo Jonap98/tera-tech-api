@@ -21,7 +21,7 @@ class SolicitudesSeeder extends Seeder
             'id_estado' => 6,
             'descripcion' => 'Se quebró la esquinita de la pantalla y se batalla para cerrar',
             'fecha_cita' => Carbon::now(),
-            'comentario' => 'Se comprará la carcaza completa, ya que no hay piezas disponibles para ese modelo.',
+            'comentario_solucion' => 'Se comprará la carcaza completa, ya que no hay piezas disponibles para ese modelo.',
             'fecha_listo' => Carbon::now(),
             'fecha_real' => Carbon::now(),
             'created_at' => Carbon::now(),

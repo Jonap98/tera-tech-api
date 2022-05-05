@@ -19,10 +19,11 @@ class CreateSolicitudesTable extends Migration
             $table->integer('id_categoria');
             $table->integer('id_estado');
             $table->integer('id_tecnico')->nullable();
-            $table->string('descripcion', 1000);
+            $table->string('descripcion', 500);
             $table->datetime('fecha_cita');
             $table->string('imagen')->nullable();
-            $table->string('comentario')->nullable();
+            $table->string('comentario_solucion', 500)->nullable();
+            $table->string('comentario_detalle', 500)->nullable();
             $table->date('fecha_listo')->nullable();
             $table->date('fecha_real')->nullable();
             $table->timestamps();
