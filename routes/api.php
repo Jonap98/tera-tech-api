@@ -62,6 +62,8 @@ Route::group([
     Route::get('solicitudes/{id?}/{id_user?}/{id_estado?}/{id_tecnico?}', 'App\Http\Controllers\SolicitudesController@obtenerSolicitudesporFiltro');
     // Cerrar solicitud
     Route::put('cerrar-solicitud/{idSolicitud}', 'App\Http\Controllers\SolicitudesController@cerrarSolicitud');
+    // Finalizar solicitud
+    Route::post('finalizar-solicitud/{idSolicitud}', 'App\Http\Controllers\SolicitudesController@finalizarSolicitud');
     // Atender solicitud
     Route::post('atender-solicitud/{idSolicitud}', 'App\Http\Controllers\SolicitudesController@atenderSolicitud');
     // Asignar técnico a solicitud

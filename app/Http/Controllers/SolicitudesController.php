@@ -502,11 +502,16 @@ class SolicitudesController extends Controller
 
         $solicitud = Solicitudes::find($idSolicitud);
         
-        if($request->detalle == 1) {
-            $solicitud->id_estado = 5;
-        } else {
-            $solicitud->id_estado = 4;
-        }
+        // if($request->cierra == 1) {
+        //     if($request->detalle == 1) {
+        //         $solicitud->id_estado = 5;
+        //     } else {
+        //         $solicitud->id_estado = 4;
+        //     }
+        // } else {
+        //     $solicitud->id_estado = 3;
+        // }
+        $solicitud->id_estado = 3;
         
         $solicitud->comentario_solucion = $request->comentario_solucion;
         $solicitud->comentario_detalle = $request->comentario_detalle;
@@ -537,6 +542,20 @@ class SolicitudesController extends Controller
         return response()->json([
             'result' => true,
             'message' => 'Solicitud actualizada con éxito!'
+        ]);
+    }
+
+    public function finalizarSolicitud(Request $request, $idSolicitud) {
+
+        $solicitud = Solicitudes::find($idSolicitud);
+        $solicitud->id_estado = $request->id_estado;
+        $solicitud->fecha_real = Carbon::now();
+
+        $solicitud->save();
+
+        return response()->json([
+            'result' => true,
+            'message' => 'Solicitud finalizada con éxito!'
         ]);
     }
 
